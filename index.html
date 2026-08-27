@@ -985,7 +985,6 @@
                     <li><a class="active" href="#vagas">Vagas</a></li>
                     <li><a href="#empresas">Empresas</a></li>
                     <li><a href="#treinamentos">Treinamentos</a></li>
-                    <!-- Admin mobile (visível apenas quando menu aberto) -->
                     <li style="display:none;" id="adminMobileLi">
                         <button class="btn-admin" id="btnAdminMobile">
                             <i class="fas fa-lock"></i> Admin
@@ -1030,7 +1029,6 @@
             <p class="section-subtitle animate-on-scroll">
                 Confira as oportunidades disponíveis e candidate-se enviando seu currículo.
             </p>
-            <!-- Mensagem de sucesso (exibida via URL) -->
             <div class="success-message" id="successVagas">
                 <i class="fas fa-check-circle"></i> Candidatura enviada com sucesso! Entraremos em contato em breve.
             </div>
@@ -1047,13 +1045,12 @@
             <p class="section-subtitle animate-on-scroll">
                 Preencha o formulário abaixo e entraremos em contato para oferecer as melhores soluções em recrutamento e seleção.
             </p>
-            <!-- Mensagem de sucesso (exibida via URL) -->
             <div class="success-message" id="successEmpresas">
                 <i class="fas fa-check-circle"></i> Mensagem enviada com sucesso! Em breve retornamos o contato.
             </div>
             <div class="empresa-form animate-on-scroll">
-                <form action="https://formsubmit.co/5140926c857b0471afbd71d485cf6545" method="POST">
-                    <input type="hidden" name="_captcha" value="false" />
+                <!-- ⚠️ Substitua SEU_ENDPOINT_AQUI pelo endpoint do Formspree -->
+                <form action="https://formspree.io/f/SEU_ENDPOINT_AQUI" method="POST">
                     <input type="hidden" name="_subject" value="Contato de empresa - Nattasha RH" />
                     <input type="hidden" name="_next" value="https://web0-1.github.io/?success=empresas#empresas" />
 
@@ -1139,7 +1136,6 @@
     <div class="modal-overlay" id="modalAdmin">
         <div class="modal">
             <span class="modal-close" id="modalAdminClose">&times;</span>
-
             <div id="adminModalContent">
                 <!-- Login -->
                 <div id="adminLoginModal">
@@ -1158,7 +1154,6 @@
                         <p id="loginErrorModal" style="color:#e74c3c;margin-top:16px;display:none;">Usuário ou senha incorretos.</p>
                     </form>
                 </div>
-
                 <!-- Painel -->
                 <div id="adminPanelModal" style="display:none;">
                     <div class="admin-panel" style="padding:0;box-shadow:none;">
@@ -1166,7 +1161,6 @@
                             <h3>Gerenciar Vagas</h3>
                             <button class="btn-logout" id="btnLogoutModal">Sair</button>
                         </div>
-
                         <form id="formNovaVagaModal">
                             <div class="form-group">
                                 <label for="novaVagaTituloModal">Título da vaga *</label>
@@ -1190,9 +1184,7 @@
                             </div>
                             <button type="submit" class="btn-submit">Adicionar vaga</button>
                         </form>
-
                         <hr />
-
                         <h3 style="margin-bottom:16px;">Vagas atuais</h3>
                         <div id="adminVagasListModal"></div>
                     </div>
@@ -1208,8 +1200,8 @@
             <h2>Candidatar-se à vaga</h2>
             <p id="modalVagaNome">Vaga: <strong>Carregando...</strong></p>
 
-            <form action="https://formsubmit.co/5140926c857b0471afbd71d485cf6545" method="POST" enctype="multipart/form-data">
-                <input type="hidden" name="_captcha" value="false" />
+            <!-- ⚠️ Substitua SEU_ENDPOINT_AQUI pelo endpoint do Formspree -->
+            <form action="https://formspree.io/f/SEU_ENDPOINT_AQUI" method="POST">
                 <input type="hidden" name="_subject" value="Nova candidatura - Nattasha RH" />
                 <input type="hidden" name="_next" value="https://web0-1.github.io/?success=vagas#vagas" />
                 <input type="hidden" name="vaga" id="hiddenVaga" />
@@ -1227,12 +1219,15 @@
                     <input type="tel" id="candTelefone" name="telefone" placeholder="(00) 00000-0000" />
                 </div>
                 <div class="form-group">
-                    <label for="candCurriculo">Anexar currículo (PDF, DOC) *</label>
-                    <input type="file" id="candCurriculo" name="curriculo" accept=".pdf,.doc,.docx" required />
-                </div>
-                <div class="form-group">
                     <label for="candMensagem">Mensagem (opcional)</label>
                     <textarea id="candMensagem" name="mensagem" placeholder="Escreva algo sobre você..."></textarea>
+                </div>
+                <!-- O campo de arquivo foi removido porque o Formspree gratuito não aceita anexos -->
+                <div class="form-group" style="background: var(--bg); padding: 12px 16px; border-radius: 12px; border: 1px dashed var(--border-light);">
+                    <p style="font-size:0.9rem; color:var(--text-gray);">
+                        <i class="fas fa-info-circle" style="color:var(--accent);"></i> 
+                        Para enviar seu currículo, após a candidatura, encaminhe-o para o e-mail que você receberá ou entre em contato pelo WhatsApp.
+                    </p>
                 </div>
                 <button type="submit" class="btn-submit">Enviar candidatura</button>
             </form>
@@ -1288,7 +1283,6 @@
             if (success === 'vagas') {
                 const msg = document.getElementById('successVagas');
                 if (msg) msg.classList.add('show');
-                // Remove o parâmetro da URL sem recarregar
                 if (window.history && window.history.replaceState) {
                     const newUrl = window.location.pathname + window.location.hash;
                     window.history.replaceState({}, '', newUrl);
@@ -1536,19 +1530,6 @@
             });
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape' && modalCand.classList.contains('active')) fecharModalCandidatura();
-            });
-
-            document.querySelector('#modalCandidatura form').addEventListener('submit', function(e) {
-                const nome = document.getElementById('candNome').value.trim();
-                const email = document.getElementById('candEmail').value.trim();
-                const curriculo = document.getElementById('candCurriculo').files[0];
-                if (!nome || !email || !curriculo) {
-                    e.preventDefault();
-                    alert('Por favor, preencha nome, e-mail e anexe o currículo.');
-                } else {
-                    // O formulário será enviado, e o FormSubmit redirecionará para _next
-                    setTimeout(() => fecharModalCandidatura(), 500);
-                }
             });
 
             // ========== NAVEGAÇÃO ==========
