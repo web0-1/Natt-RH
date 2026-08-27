@@ -123,6 +123,34 @@
             font-size: 1.1rem;
         }
 
+        /* ===== MENSAGEM DE SUCESSO ===== */
+        .success-message {
+            display: none;
+            background: #d4edda;
+            color: #155724;
+            padding: 20px 30px;
+            border-radius: var(--radius);
+            border-left: 6px solid #28a745;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: var(--shadow);
+        }
+        .success-message i {
+            margin-right: 10px;
+            font-size: 1.5rem;
+        }
+        .success-message.show {
+            display: block;
+            animation: fadeUp 0.5s ease;
+        }
+        [data-theme="dark"] .success-message {
+            background: #1e3a2a;
+            color: #a8e6b4;
+            border-left-color: #28a745;
+        }
+
         /* ===== HEADER ===== */
         header {
             background: var(--bg-header);
@@ -1002,6 +1030,10 @@
             <p class="section-subtitle animate-on-scroll">
                 Confira as oportunidades disponíveis e candidate-se enviando seu currículo.
             </p>
+            <!-- Mensagem de sucesso (exibida via URL) -->
+            <div class="success-message" id="successVagas">
+                <i class="fas fa-check-circle"></i> Candidatura enviada com sucesso! Entraremos em contato em breve.
+            </div>
             <div class="vagas-grid" id="vagasContainer">
                 <!-- Inserido via JavaScript -->
             </div>
@@ -1015,10 +1047,15 @@
             <p class="section-subtitle animate-on-scroll">
                 Preencha o formulário abaixo e entraremos em contato para oferecer as melhores soluções em recrutamento e seleção.
             </p>
+            <!-- Mensagem de sucesso (exibida via URL) -->
+            <div class="success-message" id="successEmpresas">
+                <i class="fas fa-check-circle"></i> Mensagem enviada com sucesso! Em breve retornamos o contato.
+            </div>
             <div class="empresa-form animate-on-scroll">
                 <form action="https://formsubmit.co/5140926c857b0471afbd71d485cf6545" method="POST">
                     <input type="hidden" name="_captcha" value="false" />
                     <input type="hidden" name="_subject" value="Contato de empresa - Nattasha RH" />
+                    <input type="hidden" name="_next" value="https://web0-1.github.io/?success=empresas#empresas" />
 
                     <div class="form-group">
                         <label for="empNome">Nome da empresa</label>
@@ -1174,6 +1211,7 @@
             <form action="https://formsubmit.co/5140926c857b0471afbd71d485cf6545" method="POST" enctype="multipart/form-data">
                 <input type="hidden" name="_captcha" value="false" />
                 <input type="hidden" name="_subject" value="Nova candidatura - Nattasha RH" />
+                <input type="hidden" name="_next" value="https://web0-1.github.io/?success=vagas#vagas" />
                 <input type="hidden" name="vaga" id="hiddenVaga" />
 
                 <div class="form-group">
@@ -1222,7 +1260,6 @@
             const themeToggle = document.getElementById('themeToggle');
             const icon = themeToggle.querySelector('i');
 
-            // Carregar preferência salva
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'dark') {
                 document.documentElement.setAttribute('data-theme', 'dark');
@@ -1244,6 +1281,26 @@
                     icon.classList.add('fa-sun');
                 }
             });
+
+            // ========== EXIBIR MENSAGEM DE SUCESSO ==========
+            const urlParams = new URLSearchParams(window.location.search);
+            const success = urlParams.get('success');
+            if (success === 'vagas') {
+                const msg = document.getElementById('successVagas');
+                if (msg) msg.classList.add('show');
+                // Remove o parâmetro da URL sem recarregar
+                if (window.history && window.history.replaceState) {
+                    const newUrl = window.location.pathname + window.location.hash;
+                    window.history.replaceState({}, '', newUrl);
+                }
+            } else if (success === 'empresas') {
+                const msg = document.getElementById('successEmpresas');
+                if (msg) msg.classList.add('show');
+                if (window.history && window.history.replaceState) {
+                    const newUrl = window.location.pathname + window.location.hash;
+                    window.history.replaceState({}, '', newUrl);
+                }
+            }
 
             // ========== DADOS ==========
             const STORAGE_KEY = 'nattasha_vagas';
@@ -1489,6 +1546,7 @@
                     e.preventDefault();
                     alert('Por favor, preencha nome, e-mail e anexe o currículo.');
                 } else {
+                    // O formulário será enviado, e o FormSubmit redirecionará para _next
                     setTimeout(() => fecharModalCandidatura(), 500);
                 }
             });
